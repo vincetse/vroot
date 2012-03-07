@@ -77,6 +77,6 @@ The best way to delete a `vroot` is do reboot your machine, then delete the dire
 References
 ----------
 
-https://wiki.ubuntu.com/DebootstrapChroot
-http://jblevins.org/log/ubuntu-chroot
-http://jblevins.org/log/ubuntu-chroot
+1. https://wiki.ubuntu.com/DebootstrapChroot
+2. http://jblevins.org/log/ubuntu-chroot
+3. http://jblevins.org/log/ubuntu-chroot
