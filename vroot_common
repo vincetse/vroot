@@ -1,0 +1,131 @@
+#!/bin/bash
+
+set -e
+################################################################################
+# conf file location
+################################################################################
+VROOT_CONF_FILE=~/.vrootrc
+
+################################################################################
+# determines if you are on Debian or Ubuntu
+################################################################################
+function vroot_get_linux_distribution()
+{
+    local distribution=unknown
+    local mybin=/usr/bin/lsb_release
+    if [ -x ${mybin} ]; then
+        distribution=$(${mybin} --id --short)
+    fi
+    echo ${distribution}
+}
+
+################################################################################
+# determines if you are on Debian or Ubuntu
+################################################################################
+function vroot_get_linux_distribution_codename()
+{
+    local codename=unknown
+    local mybin=/usr/bin/lsb_release
+    if [ -x ${mybin} ]; then
+        codename=$(${mybin} --codename --short)
+    fi
+    echo ${codename}
+}
+
+################################################################################
+# installs a default conf file
+################################################################################
+function vroot_write_conf_file_if_not_exist()
+{
+    if [ ! -e "${VROOT_CONF_FILE}" ]; then
+        local codename=$(vroot_get_linux_distribution_codename)
+        echo "
+#
+# the location where your vroots will live
+#
+VROOT_BASE=${HOME}/.vroot
+
+#
+# the default architecture to build vroots in if none is specified
+#
+VROOT_DEFAULT_ARCHITECTURE=amd64
+
+#
+# the default codename to build vroots with if none is specified
+#
+VROOT_DEFAULT_CODENAME=${codename}
+" > ${VROOT_CONF_FILE}
+    fi
+}
+
+################################################################################
+# sources the conf file if it exists
+################################################################################
+function vroot_source_conf_file()
+{
+    if [ -r "${VROOT_CONF_FILE}" ]; then
+        . ${VROOT_CONF_FILE}
+    fi
+}
+
+################################################################################
+# converts a vroot name to its directory location
+################################################################################
+function vroot_get_directory()
+{
+    local vroot=$1
+    local directory="${VROOT_BASE}/${vroot}"
+    mkdir -p ${VROOT_BASE}
+    echo ${directory}
+}
+
+################################################################################
+# gets the absolute path of a directory.  isn't there a utility for this?
+################################################################################
+function vroot_get_absolute_path()
+{
+    local directory=$1
+
+    cd $1 > /dev/null
+    local absolute_path=$(pwd)
+    cd - > /dev/null
+
+    echo ${absolute_path}
+}
+
+################################################################################
+# mounts the directories from the host
+################################################################################
+function vroot_mount_dirs()
+{
+    local vroot_directory=$1
+
+    sudo -- mount -t proc /proc ${vroot_directory}/proc 2> /dev/null
+    sudo -- mount --bind /tmp ${vroot_directory}/tmp 2> /dev/null
+    sudo -- mount --bind /home ${vroot_directory}/home 2> /dev/null
+    sudo -- mount --bind /dev ${vroot_directory}/dev 2> /dev/null
+    sudo -- mount --bind /dev/pts ${vroot_directory}/dev/pts 2> /dev/null
+    sudo -- mount --bind /dev/shm ${vroot_directory}/dev/shm 2> /dev/null
+}
+
+################################################################################
+# unmounts the directories from the host
+################################################################################
+function vroot_umount_dirs()
+{
+    local vroot_directory=$1
+
+    sudo -- umount ${vroot_directory}/dev/shm 2> /dev/null
+    sudo -- umount ${vroot_directory}/dev/pts 2> /dev/null
+    sudo -- umount ${vroot_directory}/dev 2> /dev/null
+    sudo -- umount ${vroot_directory}/tmp 2> /dev/null
+    sudo -- umount ${vroot_directory}/proc 2> /dev/null
+    sudo -- umount ${vroot_directory}/home 2> /dev/null
+}
+
+################################################################################
+# main
+################################################################################
+vroot_write_conf_file_if_not_exist
+vroot_source_conf_file
+base=$(basename $0)

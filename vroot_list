@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. $(dirname $0)/vroot_common
+
+\ls -1 ${VROOT_BASE}
