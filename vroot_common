@@ -100,12 +100,12 @@ function vroot_mount_dirs()
 {
     local vroot_directory=$1
 
-    sudo -- mount -t proc /proc ${vroot_directory}/proc 2> /dev/null
-    sudo -- mount --bind /tmp ${vroot_directory}/tmp 2> /dev/null
-    sudo -- mount --bind /home ${vroot_directory}/home 2> /dev/null
-    sudo -- mount --bind /dev ${vroot_directory}/dev 2> /dev/null
-    sudo -- mount --bind /dev/pts ${vroot_directory}/dev/pts 2> /dev/null
-    sudo -- mount --bind /dev/shm ${vroot_directory}/dev/shm 2> /dev/null
+    sudo -- mount -t proc /proc ${vroot_directory}/proc 2> /dev/null || true
+    sudo -- mount --bind /tmp ${vroot_directory}/tmp 2> /dev/null || true
+    sudo -- mount --bind /home ${vroot_directory}/home 2> /dev/null || true
+    sudo -- mount --bind /dev ${vroot_directory}/dev 2> /dev/null || true
+    sudo -- mount --bind /dev/pts ${vroot_directory}/dev/pts 2> /dev/null || true
+    sudo -- mount --bind /dev/shm ${vroot_directory}/dev/shm 2> /dev/null || true
 }
 
 ################################################################################
@@ -115,12 +115,12 @@ function vroot_umount_dirs()
 {
     local vroot_directory=$1
 
-    sudo -- umount ${vroot_directory}/dev/shm 2> /dev/null
-    sudo -- umount ${vroot_directory}/dev/pts 2> /dev/null
-    sudo -- umount ${vroot_directory}/dev 2> /dev/null
-    sudo -- umount ${vroot_directory}/tmp 2> /dev/null
-    sudo -- umount ${vroot_directory}/proc 2> /dev/null
-    sudo -- umount ${vroot_directory}/home 2> /dev/null
+    sudo -- umount ${vroot_directory}/dev/shm 2> /dev/null || true
+    sudo -- umount ${vroot_directory}/dev/pts 2> /dev/null || true
+    sudo -- umount ${vroot_directory}/dev 2> /dev/null || true
+    sudo -- umount ${vroot_directory}/tmp 2> /dev/null || true
+    sudo -- umount ${vroot_directory}/proc 2> /dev/null || true
+    sudo -- umount ${vroot_directory}/home 2> /dev/null || true
 }
 
 ################################################################################

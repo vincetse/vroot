@@ -3,7 +3,6 @@
 . $(dirname $0)/vroot_common 
 
 [ -z "$1" ] && { echo No chroot directory specified; exit 1; }
-
 vroot=$1
 vroot_directory=$(vroot_get_directory ${vroot})
 vroot_mount_dirs ${vroot_directory}
