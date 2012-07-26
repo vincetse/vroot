@@ -25,7 +25,7 @@ ${base} [options] <vroot_name>
 ################################################################################
 function install_debootstrap()
 {
-	sudo -- apt-get install -y debootstrap || true
+    sudo -- apt-get install -y debootstrap || true
 }
 
 ################################################################################
@@ -33,10 +33,10 @@ function install_debootstrap()
 ################################################################################
 function install_files()
 {
-	local vroot_directory=$1
-	for file in /etc/passwd /etc/shadow /etc/group /etc/sudoers /etc/hosts; do
-		sudo -- cp -f ${file} ${vroot_directory}/etc
-	done
+    local vroot_directory=$1
+    for file in /etc/passwd /etc/shadow /etc/group /etc/sudoers /etc/hosts; do
+        sudo -- cp -f ${file} ${vroot_directory}/etc
+    done
 }
 
 ################################################################################
@@ -44,12 +44,12 @@ function install_files()
 ################################################################################
 function make_vroot_directory()
 {
-	local vroot_directory=$1
-	if [ -e ${vroot_directory} ]; then
-		echo "vroot already exists: ${vroot_directory}"
-		exit 4
-	fi
-	mkdir -p ${vroot_directory}
+    local vroot_directory=$1
+    if [ -e ${vroot_directory} ]; then
+        echo "vroot already exists: ${vroot_directory}"
+        exit 4
+    fi
+    mkdir -p ${vroot_directory}
 }
 
 ################################################################################
@@ -57,11 +57,11 @@ function make_vroot_directory()
 ################################################################################
 function bootstrap_chroot()
 {
-	local architecture=$1
-	local codename=$2
-	local vroot_directory=$3
+    local architecture=$1
+    local codename=$2
+    local vroot_directory=$3
     local archive=$4
-	sudo -- debootstrap --arch ${architecture} ${codename} ${vroot_directory} ${archive}
+    sudo -- debootstrap --arch ${architecture} ${codename} ${vroot_directory} ${archive}
 }
 
 ################################################################################
