@@ -183,6 +183,6 @@ make_vroot_directory ${vroot_directory}
 trap 'cleanup_error' INT TERM ERR
 bootstrap_chroot ${architecture} ${codename} ${vroot_directory} ${archive} ${debootstrap_script}
 install_files ${vroot_directory}
-install_packages ${vroot_directory} sudo
+install_packages ${vroot_directory} sudo lsb-release
 
 echo "Done!  Run \"vroot ${vroot}\" to get into the vroot."
