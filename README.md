@@ -32,6 +32,11 @@ The configuration file, `~/.vrootrc`, will be created if you do not already have
     #
     VROOT_DEFAULT_CODENAME=squeeze
 
+    #
+    # the default distribution to build vroots with if none is specified
+    #
+    VROOT_DEFAULT_DISTRIBUTION=Debian
+
 Installation
 ------------
 
@@ -53,6 +58,7 @@ A new `vroot` can be created with the `vroot_create` utility.  Run it with the `
     
         -h|--help       prints this page
         -a|--arch       architecture, i386 or amd64 [default: amd64]
+        -d|--distro     distribution, Ubuntu or Debian [default: Debian]
         -c|--codename   codename of the version [default: squeeze]
 
 The default values for the parameters are set in the configuration file.
@@ -73,10 +79,8 @@ How do I delete a `vroot`?
 
 The best way to delete a `vroot` is do reboot your machine, then delete the directory of the `vroot`.  Rebooting is a good idea if you have used that `vroot` because directories might have been mounted in it.
 
-
 References
 ----------
 
 1. https://wiki.ubuntu.com/DebootstrapChroot
 2. http://jblevins.org/log/ubuntu-chroot
-3. http://jblevins.org/log/ubuntu-chroot

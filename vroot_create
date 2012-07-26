@@ -15,6 +15,7 @@ ${base} [options] <vroot_name>
 
     -h|--help       prints this page
     -a|--arch       architecture, i386 or amd64 [default: ${VROOT_DEFAULT_ARCHITECTURE}]
+    -d|--distro     distribution, Ubuntu or Debian [default: ${VROOT_DEFAULT_DISTRIBUTION}]
     -c|--codename   codename of the version [default: ${VROOT_DEFAULT_CODENAME}]
 "
     exit 255
@@ -23,9 +24,11 @@ ${base} [options] <vroot_name>
 ################################################################################
 # installs the debootstrap utility that we will use to bootstrap
 ################################################################################
-function install_debootstrap()
+function install_prerequisites()
 {
-    sudo -- apt-get install -y debootstrap || true
+    local packages="debootstrap sudo"
+    sudo -- apt-get update --assume-yes
+    sudo -- apt-get install --assume-yes ${packages} || true
 }
 
 ################################################################################
@@ -37,6 +40,24 @@ function install_files()
     for file in /etc/passwd /etc/shadow /etc/group /etc/sudoers /etc/hosts; do
         sudo -- cp -f ${file} ${vroot_directory}/etc
     done
+}
+
+################################################################################
+# run a commant in a chroot
+################################################################################
+function chroot_run()
+{
+    local vroot_directory=$1; shift
+    sudo -- chroot ${vroot_directory} $@
+}
+
+################################################################################
+# install a package into a chroot
+################################################################################
+function chroot_apt_get()
+{
+    local vroot_directory=$1; shift
+    chroot_run ${vroot_directory} /usr/bin/apt-get --assume-yes $@
 }
 
 ################################################################################
@@ -61,7 +82,18 @@ function bootstrap_chroot()
     local codename=$2
     local vroot_directory=$3
     local archive=$4
-    sudo -- debootstrap --arch ${architecture} ${codename} ${vroot_directory} ${archive}
+    local debootstrap_script=$5
+    sudo -- debootstrap --arch ${architecture} ${codename} ${vroot_directory} ${archive} ${debootstrap_script}
+}
+
+################################################################################
+# install extra packages
+################################################################################
+function install_packages()
+{
+    local vroot_directory=$1; shift
+    chroot_apt_get ${vroot_directory} update
+    chroot_apt_get ${vroot_directory} install $@
 }
 
 ################################################################################
@@ -77,6 +109,7 @@ function cleanup_error()
 # main
 ################################################################################
 archive=
+debootstrap_script=
 codename=${VROOT_DEFAULT_CODENAME}
 distro=$(vroot_get_linux_distribution)
 architecture=${VROOT_DEFAULT_ARCHITECTURE}
@@ -112,6 +145,9 @@ while [ $# -gt 0 ]; do
         -c|--codename)
             codename="$2"
             shift;;
+        -d|--distro)
+            distro="$2"
+            shift;;
         --)
             shift
             break
@@ -126,8 +162,10 @@ vroot=$1
 [ -z "${vroot}" ] && usage
 if [ "${distro}" = "Ubuntu" ]; then
     archive=${ARCHIVE_UBUNTU}
+    debootstrap_script=/usr/share/debootstrap/scripts/gutsy
 elif [ "${distro}" = "Debian" ]; then
     archive=${ARCHIVE_DEBIAN}
+    debootstrap_script=/usr/share/debootstrap/scripts/sid
 else
     echo "${base}: unknown distro: ${distro}"
     usage
@@ -139,11 +177,12 @@ codename: ${codename}
 vroot: ${vroot}
 "
 
-install_debootstrap
+install_prerequisites
 vroot_directory=$(vroot_get_directory ${vroot})
 make_vroot_directory ${vroot_directory}
 trap 'cleanup_error' INT TERM ERR
-bootstrap_chroot ${architecture} ${codename} ${vroot_directory} ${archive}
+bootstrap_chroot ${architecture} ${codename} ${vroot_directory} ${archive} ${debootstrap_script}
 install_files ${vroot_directory}
+install_packages ${vroot_directory} sudo
 
 echo "Done!  Run \"vroot ${vroot}\" to get into the vroot."
