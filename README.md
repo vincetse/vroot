@@ -63,11 +63,21 @@ A new `vroot` can be created with the `vroot_create` utility.  Run it with the `
 
 The default values for the parameters are set in the configuration file.
 
+The following are some examples will work on both Ubuntu and Debian distributions.  Note that you can create Ubuntu `vroot`s in Debian and vice versa.
+
+    vt100x@dev01:~/bin
+    $ vroot_create --arch=amd64 --distro=Ubuntu --codename=precise ub_precise
+
+    vt100x@dev01:~/bin
+    $ vroot_create --arch=i386 --distro=Debian --codename=lenny deb_lenny
+
+    vt100x@dev01:~/bin
+    $ vroot_create --arch=i386 --distro=Ubuntu --codename=natty ub_natty
+
 Using a `vroot`
 ===============
 
 Simple!  Run `vroot <vroot_name>` at the command line.
-
 
 What `vroot`s do I have?
 ========================
