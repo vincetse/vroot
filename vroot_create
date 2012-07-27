@@ -27,7 +27,6 @@ ${base} [options] <vroot_name>
 function install_prerequisites()
 {
     local packages="debootstrap sudo"
-    sudo -- apt-get update --assume-yes
     sudo -- apt-get install --assume-yes ${packages} || true
 }
 
