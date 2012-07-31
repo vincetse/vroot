@@ -39,6 +39,7 @@ function vroot_write_conf_file_if_not_exist()
 {
     if [ ! -e "${VROOT_CONF_FILE}" ]; then
         local codename=$(vroot_get_linux_distribution_codename)
+        local distribution=$(vroot_get_linux_distribution_codename)
         echo "
 #
 # the location where your vroots will live
@@ -54,6 +55,11 @@ VROOT_DEFAULT_ARCHITECTURE=amd64
 # the default codename to build vroots with if none is specified
 #
 VROOT_DEFAULT_CODENAME=${codename}
+
+#
+# the default distribution to build vroots with if none is specified
+#
+VROOT_DEFAULT_DISTRIBUTION=${distribution}
 " > ${VROOT_CONF_FILE}
     fi
 }
