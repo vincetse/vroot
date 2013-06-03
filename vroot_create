@@ -4,6 +4,7 @@
 
 ARCHIVE_UBUNTU=http://archive.ubuntu.com/ubuntu
 ARCHIVE_DEBIAN=http://ftp.us.debian.org/debian
+ARCHIVE_DEBIAN=http://archive.debian.org/debian
 
 ################################################################################
 # shows the help page
@@ -139,7 +140,7 @@ while [ $# -gt 0 ]; do
         -h|--help)
             usage;;
         -a|--arch)
-            arch="$2"
+            architecture="$2"
             shift;;
         -c|--codename)
             codename="$2"
